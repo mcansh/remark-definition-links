@@ -1,8 +1,7 @@
-***
-
+---
 title: Conventions
 order: 1
---------
+---
 
 # Conventions
 
