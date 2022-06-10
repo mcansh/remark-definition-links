@@ -1,12 +1,13 @@
 {
   "name": "@mcansh/remark-definition-links",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "clean": "del dist",
     "prebuild": "npm run clean",
-    "build": "tsc"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
   "keywords": [],
   "author": "Logan McAnsh <logan@mcan.sh> (https://mcan.sh)",
