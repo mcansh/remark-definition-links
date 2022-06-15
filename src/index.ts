@@ -46,14 +46,14 @@ export function remarkDefinitionLinks(): Plugin {
         let title: string = node.type === "image" ? node.alt : aggregate(node);
         let reference = slugify(title);
 
-        let titles: Record<string, Definition> = own.call(definitions, url)
+        let urls: Record<string, Definition> = own.call(definitions, url)
           ? definitions[url]
           : (definitions[url] = Object.create(null));
 
         let identifier: string;
 
-        if (own.call(titles, title)) {
-          identifier = titles[title].identifier;
+        if (own.call(urls, url)) {
+          identifier = urls[url].identifier;
         } else {
           do {
             if (!(reference in references)) {
@@ -76,7 +76,7 @@ export function remarkDefinitionLinks(): Plugin {
             url,
           };
 
-          titles[title] = definition;
+          urls[url] = definition;
           tree.children.push(definition);
         }
 
