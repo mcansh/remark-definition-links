@@ -43,7 +43,7 @@ export function remarkDefinitionLinks(): Plugin {
         ["image", "link"].includes(node.type)
       ) {
         let url: string = node.url;
-        let title: string = aggregate(node);
+        let title: string = node.type === "image" ? node.alt : aggregate(node);
         let reference = slugify(title);
 
         let titles: Record<string, Definition> = own.call(definitions, url)
