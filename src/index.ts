@@ -1,6 +1,3 @@
-import { URL } from "node:url";
-import * as path from "node:path";
-
 import { visit, SKIP } from "unist-util-visit";
 import type { Definition, ImageReference, LinkReference } from "mdast";
 import type { Plugin } from "unified";
@@ -8,20 +5,28 @@ import slugify from "@sindresorhus/slugify";
 
 let own = {}.hasOwnProperty;
 
+function aggregate(node: any) {
+  const text: string = node.children.reduce((str: string, arr: any) => {
+    if (["text", "inlineCode"].includes(arr.type)) {
+      str += arr.value;
+    }
+    return str;
+  }, "");
+
+  return text;
+}
+
+function findImage(node: any) {
+  if (node.children && node.children.length > 0) {
+    return node.children.find((child: any) => child.type === "image");
+  }
+}
+
 export function remarkDefinitionLinks(): Plugin {
   return (tree) => {
     let definitions: Record<string, Record<string, string>> = {};
     let existing: Array<string> = [];
     let references = Object.create(null);
-
-    function aggregate(node: any) {
-      const text: string = node.children.reduce((str: string, arr: any) => {
-        if (["text", "inlineCode"].includes(arr.type)) str += arr.value;
-        return str;
-      }, "");
-
-      return text;
-    }
 
     visit(tree, "definition", (node) => {
       let url = node.url;
@@ -31,7 +36,7 @@ export function remarkDefinitionLinks(): Plugin {
         definitions[url] = Object.create(null);
       }
 
-      let title = node.title || "";
+      let title = node.label || "";
 
       definitions[url][title] = node;
     });
@@ -45,6 +50,16 @@ export function remarkDefinitionLinks(): Plugin {
         let url: string = node.url;
         let title: string = node.type === "image" ? node.alt : aggregate(node);
         let reference = slugify(title);
+
+        // this is usually blank if the image is also a link
+        if (!reference) {
+          let image = findImage(node);
+          if (image) {
+            reference = slugify(image.alt + "-image");
+          } else {
+            reference = slugify(node.url);
+          }
+        }
 
         let urls: Record<string, Definition> = own.call(definitions, url)
           ? definitions[url]
