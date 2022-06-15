@@ -4,14 +4,24 @@ import * as path from "node:path";
 import { visit, SKIP } from "unist-util-visit";
 import type { Definition, ImageReference, LinkReference } from "mdast";
 import type { Plugin } from "unified";
+import slugify from "@sindresorhus/slugify";
 
 let own = {}.hasOwnProperty;
 
-export function remarkReferenceLinksBottom(): Plugin {
+export function remarkDefinitionLinks(): Plugin {
   return (tree) => {
-    let definitions = Object.create(null);
+    let definitions: Record<string, Record<string, string>> = {};
     let existing: Array<string> = [];
-    let hosts = Object.create(null);
+    let references = Object.create(null);
+
+    function aggregate(node: any) {
+      const text: string = node.children.reduce((str: string, arr: any) => {
+        if (["text", "inlineCode"].includes(arr.type)) str += arr.value;
+        return str;
+      }, "");
+
+      return text;
+    }
 
     visit(tree, "definition", (node) => {
       let url = node.url;
@@ -33,12 +43,8 @@ export function remarkReferenceLinksBottom(): Plugin {
         ["image", "link"].includes(node.type)
       ) {
         let url: string = node.url;
-        let host: string = "";
-        let title = node.title || "";
-        try {
-          host = new URL(url).host;
-          host = host ? path.parse(host).name : "";
-        } catch {}
+        let title: string = aggregate(node);
+        let reference = slugify(title);
 
         let titles: Record<string, Definition> = own.call(definitions, url)
           ? definitions[url]
@@ -50,17 +56,23 @@ export function remarkReferenceLinksBottom(): Plugin {
           identifier = titles[title].identifier;
         } else {
           do {
-            if (!(host in hosts)) {
-              hosts[host] = 0;
+            if (!(reference in references)) {
+              references[reference] = 0;
             }
 
-            identifier = (host ? host + "-" : "") + ++hosts[host];
+            if (references[reference] === 0) {
+              identifier = reference;
+              references[reference] += 1;
+            } else {
+              references[reference] += 1;
+              identifier = reference + "-" + references[reference];
+            }
           } while (existing.includes(identifier));
 
           let definition: Definition = {
             type: "definition",
             identifier,
-            title,
+            title: "",
             url,
           };
 

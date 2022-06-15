@@ -5,7 +5,7 @@ order: 1
 
 # Conventions
 
-A lot of Remix APIs aren't imported from the `"@remix-run/*"` packages, but are instead conventions and exports from _your_ application modules. When you `import from "@remix-run/*"`, _you are calling Remix_, but these APIs are when _Remix calls your code_.
+A lot of Remix APIs aren't imported from the `"@remix-run/*"` packages, but are instead conventions and exports from *your* application modules. When you `import from "@remix-run/*"`, *you are calling Remix*, but these APIs are when *Remix calls your code*.
 
 ## remix.config.js
 
@@ -110,7 +110,7 @@ either a `.js` or `.ts` file extension.
 ### serverBuildDirectory
 
 <docs-warning>This option is deprecated and will likely be removed in a future
-stable release. Use [`serverBuildPath`](#serverbuildpath) instead.</docs-warning>
+stable release. Use [`serverBuildPath`][server-build-path] instead.</docs-warning>
 
 The path to the server build, relative to `remix.config.js`. Defaults to
 "build". This needs to be deployed to your server.
@@ -121,7 +121,7 @@ The path to the server build file, relative to `remix.config.js`. This file
 should end in a `.js` extension and should be deployed to your server.
 
 If omitted, the default build path will be based on your
-[`serverBuildTarget`](#serverbuildtarget).
+[`serverBuildTarget`][server-build-target].
 
 ### serverBuildTarget
 
@@ -129,17 +129,17 @@ The target of the server build. Defaults to `"node-cjs"`.
 
 The `serverBuildTarget` can be one of the following:
 
-- [`"arc"`](https://arc.codes)
-- [`"cloudflare-pages"`](https://pages.cloudflare.com/)
-- [`"cloudflare-workers"`](https://workers.cloudflare.com/)
-- [`"deno"`](https://deno.land/)
-- [`"netlify"`](https://www.netlify.com/)
-- [`"node-cjs"`](https://nodejs.org/en/)
-- [`"vercel"`](https://vercel.com/)
+* [`"arc"`][arc]
+* [`"cloudflare-pages"`][cloudflare-pages]
+* [`"cloudflare-workers"`][cloudflare-workers]
+* [`"deno"`][deno]
+* [`"netlify"`][netlify]
+* [`"node-cjs"`][node-cjs]
+* [`"vercel"`][vercel]
 
 ### serverDependenciesToBundle
 
-A list of regex patterns that determined if a module is transpiled and included in the server bundle. This can be useful when consuming ESM only packages in a CJS build.
+A list of regex patterns that determines if a module is transpiled and included in the server bundle. This can be useful when consuming ESM only packages in a CJS build.
 
 For example, the `unified` ecosystem is all ESM-only. Let's also say we're using a `@sindresorhus/slugify` which is ESM-only as well. Here's how you would be able to consume those packages in a CJS app without having to use dynamic imports:
 
@@ -166,13 +166,13 @@ module.exports = {
 
 There are a few conventions that Remix uses you should be aware of.
 
-<docs-info>[Dilum Sanjaya](https://twitter.com/DilumSanjaya) made [an awesome visualization](https://remix-routing-demo.netlify.app/) of how routes in the file system map to the URL in your app that might help you understand these conventions.</docs-info>
+<docs-info>[Dilum Sanjaya][dilum-sanjaya] made [an awesome visualization][an-awesome-visualization] of how routes in the file system map to the URL in your app that might help you understand these conventions.</docs-info>
 
 ### Special Files
 
-- **`remix.config.js`**: Remix uses this file to know how to build your app for production and run it in development. This file is required.
-- **`app/entry.server.{js,jsx,ts,tsx}`**: This is your entry into the server rendering piece of Remix. This file is required.
-- **`app/entry.client.{js,jsx,ts,tsx}`**: This is your entry into the browser rendering/hydration piece of Remix. This file is required.
+* **`remix.config.js`**: Remix uses this file to know how to build your app for production and run it in development. This file is required.
+* **`app/entry.server.{js,jsx,ts,tsx}`**: This is your entry into the server rendering piece of Remix. This file is required.
+* **`app/entry.client.{js,jsx,ts,tsx}`**: This is your entry into the browser rendering/hydration piece of Remix. This file is required.
 
 ### Route File Conventions
 
@@ -183,6 +183,7 @@ Please note that you can use either `.js`, `.jsx` or `.tsx` file extensions depe
 #### Root Layout Route
 
 <!-- prettier-ignore -->
+
 ```markdown [3]
 app/
 ├── routes/
@@ -191,13 +192,14 @@ app/
 
 The file in `app/root.tsx` is your root layout, or "root route" (very sorry for those of you who pronounce those words the same way!). It works just like all other routes:
 
-- You can export a [`loader`](#loader), [`action`](#action), [`meta`](#meta), [`headers`](#headers), or [`links`](#links) function
-- You can export an [`ErrorBoundary`](#errorboundary) or [`CatchBoundary`](#catchboundary)
-- Your default export is the layout component that renders the rest of your app in an [`<Outlet />`](https://reactrouter.com/docs/en/v6/api#outlet)
+* You can export a [`loader`][loader], [`action`][action], [`meta`][meta], [`headers`][headers-2], or [`links`][links] function
+* You can export an [`ErrorBoundary`][error-boundary] or [`CatchBoundary`][catch-boundary]
+* Your default export is the layout component that renders the rest of your app in an [`<Outlet />`][outlet]
 
 #### Basic Routes
 
 <!-- prettier-ignore -->
+
 ```markdown [3-4]
 app/
 ├── routes/
@@ -224,6 +226,7 @@ The default export in this file is the component that is rendered at that route 
 #### Dynamic Route Parameters
 
 <!-- prettier-ignore -->
+
 ```markdown [4]
 app/
 ├── routes/
@@ -252,11 +255,11 @@ Routes that begin with a `$` character indicate the name of a dynamic segment of
 
 For example: `app/routes/blog/$postId.tsx` will match the following URLs:
 
-- `/blog/my-story`
-- `/blog/once-upon-a-time`
-- `/blog/how-to-ride-a-bike`
+* `/blog/my-story`
+* `/blog/once-upon-a-time`
+* `/blog/how-to-ride-a-bike`
 
-On each of these pages, the dynamic segment of the URL path is the value of the parameter. There can be multiple parameters active at any time (as in `/dashboard/:client/invoices/:invoiceId` [view example app](https://github.com/remix-run/remix/tree/main/examples/multiple-params)) and all parameters can be accessed within components via [`useParams`](https://reactrouter.com/docs/en/v6/api#useparams) and within loaders/actions via the argument's [`params`](#loader-params) property:
+On each of these pages, the dynamic segment of the URL path is the value of the parameter. There can be multiple parameters active at any time (as in `/dashboard/:client/invoices/:invoiceId` [view example app][view-example-app]) and all parameters can be accessed within components via [`useParams`][use-params] and within loaders/actions via the argument's [`params`][params] property:
 
 ```tsx filename=app/routes/blog/$postId.tsx
 import { useParams } from "@remix-run/react";
@@ -278,11 +281,12 @@ export default function PostRoute() {
 
 Nested routes can also contain dynamic segments by using the `$` character in the parent's directory name. For example, `app/routes/blog/$postId/edit.tsx` might represent the editor page for blog entries.
 
-See the [routing guide](../guides/routing.md) for more information.
+See the [routing guide][routing-guide] for more information.
 
 #### Layout Routes
 
 <!-- prettier-ignore -->
+
 ```markdown [3,8]
 app/
 ├── routes/
@@ -310,11 +314,12 @@ app/
 
 </details>
 
-In the example above, the `blog.tsx` is a "layout route" for everything within the `blog` directory (`blog/index.tsx` and `blog/categories.tsx`). When a route has the same name as its directory (`routes/blog.tsx` and `routes/blog/`), it becomes a layout route for all of the routes inside that directory ("child routes"). Similar to your [root route](#root-layout-route), the parent route should render an `<Outlet />` where the child routes should appear. This is how you can create multiple levels of persistent layout nesting associated with URLs.
+In the example above, the `blog.tsx` is a "layout route" for everything within the `blog` directory (`blog/index.tsx` and `blog/categories.tsx`). When a route has the same name as its directory (`routes/blog.tsx` and `routes/blog/`), it becomes a layout route for all of the routes inside that directory ("child routes"). Similar to your [root route][root-route], the parent route should render an `<Outlet />` where the child routes should appear. This is how you can create multiple levels of persistent layout nesting associated with URLs.
 
 #### Pathless Layout Routes
 
 <!-- prettier-ignore -->
+
 ```markdown [3,7,10-11]
 app/
 ├── routes/
@@ -343,7 +348,7 @@ app/
 
 </details>
 
-You can also create layout routes _without adding segments to the URL_ by prepending the directory and associated parent route file with double underscores: `__`.
+You can also create layout routes *without adding segments to the URL* by prepending the directory and associated parent route file with double underscores: `__`.
 
 For example, all of your marketing pages could be in `app/routes/__marketing/*` and then share a layout by creating `app/routes/__marketing.tsx`. A route `app/routes/__marketing/product.tsx` would be accessible at the `/product` URL because `__marketing` won't add segments to the URL, just UI hierarchy.
 
@@ -352,6 +357,7 @@ For example, all of your marketing pages could be in `app/routes/__marketing/*` 
 #### Dot Delimiters
 
 <!-- prettier-ignore -->
+
 ```markdown [8]
 app/
 ├── routes/
@@ -383,6 +389,7 @@ By creating a file with `.` characters between segments, you can create a nested
 #### Splat Routes
 
 <!-- prettier-ignore -->
+
 ```markdown [7]
 app/
 ├── routes/
@@ -434,7 +441,7 @@ export default function PostRoute() {
 
 ### Escaping special characters
 
-Because some characters have special meaning, you must use our escaping syntax if you want those characters to actually appear in the route. For example, if I wanted to make a [Resource Route](../guides/resource-routes) for a `/sitemap.xml`, I could name the file `app/routes/[sitemap.xml].tsx`. So you simply wrap any part of the filename with brackets and that will escape any special characters.
+Because some characters have special meaning, you must use our escaping syntax if you want those characters to actually appear in the route. For example, if I wanted to make a [Resource Route][resource-route] for a `/sitemap.xml`, I could name the file `app/routes/[sitemap.xml].tsx`. So you simply wrap any part of the filename with brackets and that will escape any special characters.
 
 <docs-info>
   Note, you could even do `app/routes/sitemap[.]xml.tsx` if you wanted to only wrap the part that needs to be escaped. It makes no difference. Choose the one you like best.
@@ -446,7 +453,7 @@ Because some characters have special meaning, you must use our escaping syntax i
 
 Remix uses `app/entry.client.tsx` as the entry point for the browser bundle. This module gives you full control over the "hydrate" step after JavaScript loads into the document.
 
-Typically this module uses `ReactDOM.hydrate` to re-hydrate the markup that was already generated on the server in your [server entry module](#entryservertsx).
+Typically this module uses `ReactDOM.hydrate` to re-hydrate the markup that was already generated on the server in your [server entry module][server-entry-module].
 
 Here's a basic example:
 
@@ -463,7 +470,7 @@ This is the first piece of code that runs in the browser. As you can see, you ha
 
 Remix uses `app/entry.server.tsx` to generate the HTTP response when rendering on the server. The `default` export of this module is a function that lets you create the response, including HTTP status, headers, and HTML, giving you full control over the way the markup is generated and sent to the client.
 
-This module should render the markup for the current page using a `<RemixServer>` element with the `context` and `url` for the current request. This markup will (optionally) be re-hydrated once JavaScript loads in the browser using the [browser entry module](#entryclienttsx).
+This module should render the markup for the current page using a `<RemixServer>` element with the `context` and `url` for the current request. This markup will (optionally) be re-hydrated once JavaScript loads in the browser using the [browser entry module][browser-entry-module].
 
 You can also export an optional `handleDataRequest` function that will allow you to modify the response of a data request. These are the requests that do not render HTML, but rather return the loader and action data to the browser once client side hydration has occurred.
 
@@ -507,7 +514,7 @@ export const handleDataRequest: HandleDataRequestFunction = (
 
 A route in Remix can be used for many things. Usually they’re used for the user interface of your app, like a React component with server-side lifecycle hooks. But they can also serve as generic routes for any kind of resource (like dynamic CSS or social images).
 
-It's important to read [Route Module Constraints](../guides/constraints).
+It's important to read [Route Module Constraints][route-module-constraints].
 
 ### `default` export
 
@@ -528,7 +535,7 @@ export default function SomeRouteComponent() {
 
 <docs-success>Watch the <a href="https://www.youtube.com/playlist?list=PLXoynULbYuEDG2wBFSZ66b85EIspy3fy6">📼 Remix Single</a>: <a href="https://www.youtube.com/watch?v=NXqEP_PsPNc&list=PLXoynULbYuEDG2wBFSZ66b85EIspy3fy6">Loading data into components</a></docs-success>
 
-Each route can define a "loader" function that will be called on the server before rendering to provide data to the route. You may think of this as a "GET" request handler in that you should not be reading the body of the request; that is the job of an [`action`](#action).
+Each route can define a "loader" function that will be called on the server before rendering to provide data to the route. You may think of this as a "GET" request handler in that you should not be reading the body of the request; that is the job of an [`action`][action].
 
 ```js
 import { json } from "@remix-run/node"; // or "@remix-run/cloudflare"
@@ -686,8 +693,8 @@ export const loader: LoaderFunction = async ({ params }) => {
 
 See also:
 
-- [`headers`](#headers)
-- [MDN Response Docs][response]
+* [`headers`][headers-2]
+* [MDN Response Docs][response]
 
 #### Throwing Responses in Loaders
 
@@ -830,7 +837,7 @@ export default function Todos() {
 }
 ```
 
-When a POST is made to a URL, multiple routes in your route hierarchy will match the URL. Unlike a GET to loaders, where all of them are called to build the UI, _only one action is called_.
+When a POST is made to a URL, multiple routes in your route hierarchy will match the URL. Unlike a GET to loaders, where all of them are called to build the UI, *only one action is called*.
 
 <docs-info>The route called will be the deepest matching route, unless the deepest matching route is an "index route". In this case, it will post to the parent route of the index (because they share the same URL, the parent wins).</docs-info>
 
@@ -845,9 +852,9 @@ Also note that forms without an action prop (`<Form method="post">`) will automa
 
 See also:
 
-- [`<Form>`][form]
-- [`<Form action>`][form action]
-- [`?index` query param][index query param]
+* [`<Form>`][form]
+* [`<Form action>`][form action]
+* [`?index` query param][index query param]
 
 ### `headers`
 
@@ -917,7 +924,7 @@ export function headers({ loaderHeaders, parentHeaders }) {
 }
 ```
 
-All that said, you can avoid this entire problem by _not defining headers in parent routes_ and only in leaf routes. Every layout that can be visited directly will likely have an "index route". If you only define headers on your leaf routes, not your parent routes, you will never have to worry about merging headers.
+All that said, you can avoid this entire problem by *not defining headers in parent routes* and only in leaf routes. Every layout that can be visited directly will likely have an "index route". If you only define headers on your leaf routes, not your parent routes, you will never have to worry about merging headers.
 
 Note that you can also add headers in your `entry.server` file for things that should be global, for example:
 
@@ -946,7 +953,7 @@ export default function handleRequest(
 }
 ```
 
-Just keep in mind that doing this will apply to _all_ document requests, but does not apply to `data` requests (for client-side transitions for example). For those, use [`handleDataRequest`][handledatarequest].
+Just keep in mind that doing this will apply to *all* document requests, but does not apply to `data` requests (for client-side transitions for example). For those, use [`handleDataRequest`][handledatarequest].
 
 ### `meta`
 
@@ -967,17 +974,17 @@ There are a few special cases (read about those below). In the case of nested ro
 
 #### `HtmlMetaDescriptor`
 
-This is an object representation and abstraction of a `<meta {...props}>` element and its attributes. [View the MDN docs for the meta API](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta).
+This is an object representation and abstraction of a `<meta {...props}>` element and its attributes. [View the MDN docs for the meta API][view-the-mdn-docs-for-the-meta-api].
 
 The `meta` export from a route should return a single `HtmlMetaDescriptor` object.
 
-Almost every `meta` element takes a `name` and `content` attribute, with the exception of [OpenGraph tags](https://ogp.me/) which use `property` instead of `name`. In either case, the attributes represent a key/value pair for each tag. Each pair in the `HtmlMetaDescriptor` object represents a separate `meta` element, and Remix maps each to the correct attributes for that tag.
+Almost every `meta` element takes a `name` and `content` attribute, with the exception of [OpenGraph tags][open-graph-tags] which use `property` instead of `name`. In either case, the attributes represent a key/value pair for each tag. Each pair in the `HtmlMetaDescriptor` object represents a separate `meta` element, and Remix maps each to the correct attributes for that tag.
 
-The `meta` object can also hold a `title` reference which maps to the [HTML `<title>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title).
+The `meta` object can also hold a `title` reference which maps to the [HTML `<title>` element][html-title-element].
 
 As a convenience, `charset: "utf-8"` will render a `<meta charset="utf-8">`.
 
-As a last option, you can also pass an object of attribute/value pairs as the value. This can be used as an escape-hatch for meta tags like the [`http-equiv` tag](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-http-equiv) which uses `http-equiv` instead of `name`.
+As a last option, you can also pass an object of attribute/value pairs as the value. This can be used as an escape-hatch for meta tags like the [`http-equiv` tag][http-equiv-tag] which uses `http-equiv` instead of `name`.
 
 Examples:
 
@@ -1006,10 +1013,10 @@ export const meta: MetaFunction = () => ({
 
 `meta` function is passed an object that has following data:
 
-- `data` is whatever exported by `loader` function
-- `location` is a `window.location`-like object that has some data about the current route
-- `params` is an object containing route params
-- `parentsData` is a hashmap of all the data exported by `loader` functions of current route and all of its parents
+* `data` is whatever exported by `loader` function
+* `location` is a `window.location`-like object that has some data about the current route
+* `params` is an object containing route params
+* `parentsData` is a hashmap of all the data exported by `loader` functions of current route and all of its parents
 
 ```tsx
 export const meta: MetaFunction = ({ data, params }) => {
@@ -1159,7 +1166,7 @@ An `ErrorBoundary` is a React component that renders whenever there is an error 
 
 **Note:** We use the word "error" to mean an uncaught exception; something you didn't anticipate happening. This is different from other types of "errors" that you are able to recover from easily, for example a 404 error where you can still show something in the user interface to indicate you weren't able to find some data.
 
-A Remix `ErrorBoundary` component works just like normal React [error boundaries](https://reactjs.org/docs/error-boundaries.html), but with a few extra capabilities. When there is an error in your route component, the `ErrorBoundary` will be rendered in its place, nested inside any parent routes. `ErrorBoundary` components also render when there is an error in the `loader` or `action` functions for a route, so all errors for that route may be handled in one spot.
+A Remix `ErrorBoundary` component works just like normal React [error boundaries][error-boundaries], but with a few extra capabilities. When there is an error in your route component, the `ErrorBoundary` will be rendered in its place, nested inside any parent routes. `ErrorBoundary` components also render when there is an error in the `loader` or `action` functions for a route, so all errors for that route may be handled in one spot.
 
 An `ErrorBoundary` component receives one prop: the `error` that occurred.
 
@@ -1186,9 +1193,9 @@ export const handle = {
 };
 ```
 
-This is almost always used on conjunction with `useMatches`. To see what kinds of things you can do with it, refer to [`useMatches`](./remix#usematches) for more information.
+This is almost always used on conjunction with `useMatches`. To see what kinds of things you can do with it, refer to [`useMatches`][use-matches] for more information.
 
-### unstable_shouldReload
+### unstable\_shouldReload
 
 <docs-warning>This API is unstable, we're confident in the use cases it solves but aren't sure about the API yet, it may change in the future.</docs-warning>
 
@@ -1218,14 +1225,14 @@ During client-side transitions, Remix will optimize reloading of routes that are
 
 This function lets apps further optimize by returning `false` when Remix is about to reload a route. There are three cases when Remix will reload a route and you have the opportunity to optimize:
 
-- if the `url.search` changes (while the `url.pathname` is the same)
-- after actions are called
-- "refresh" link clicks (click link to same URL)
+* if the `url.search` changes (while the `url.pathname` is the same)
+* after actions are called
+* "refresh" link clicks (click link to same URL)
 
 Otherwise Remix will reload the route and you have no choice:
 
-- A route matches the new URL that didn't match before
-- The `url.pathname` changed (including route params)
+* A route matches the new URL that didn't match before
+* The `url.pathname` changed (including route params)
 
 Here are a couple of common use-cases:
 
@@ -1294,7 +1301,7 @@ export async function loader({ request, params }) {
 }
 ```
 
-This is great for the activity route, but Remix doesn't know if the parent loader, `$projectId.tsx` _also_ cares about the search params. That's why Remix does the safest thing and reloads all the routes on the page when the search params change.
+This is great for the activity route, but Remix doesn't know if the parent loader, `$projectId.tsx` *also* cares about the search params. That's why Remix does the safest thing and reloads all the routes on the page when the search params change.
 
 In this UI, that's wasted bandwidth for the user, your server, and your database because `$projectId.tsx` doesn't use the search params. Consider that our loader for `$projectId.tsx` looks something like this:
 
@@ -1369,3 +1376,37 @@ export default function Page() {
 [link tag]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
 [minimatch]: https://www.npmjs.com/package/minimatch
 [handledatarequest]: #entryservertsx
+[server-build-path]: #serverbuildpath
+[server-build-target]: #serverbuildtarget
+[arc]: https://arc.codes
+[cloudflare-pages]: https://pages.cloudflare.com/
+[cloudflare-workers]: https://workers.cloudflare.com/
+[deno]: https://deno.land/
+[netlify]: https://www.netlify.com/
+[node-cjs]: https://nodejs.org/en/
+[vercel]: https://vercel.com/
+[dilum-sanjaya]: https://twitter.com/DilumSanjaya
+[an-awesome-visualization]: https://remix-routing-demo.netlify.app/
+[loader]: #loader
+[action]: #action
+[meta]: #meta
+[headers-2]: #headers
+[links]: #links
+[error-boundary]: #errorboundary
+[catch-boundary]: #catchboundary
+[outlet]: https://reactrouter.com/docs/en/v6/api#outlet
+[view-example-app]: https://github.com/remix-run/remix/tree/main/examples/multiple-params
+[use-params]: https://reactrouter.com/docs/en/v6/api#useparams
+[params]: #loader-params
+[routing-guide]: ../guides/routing.md
+[root-route]: #root-layout-route
+[resource-route]: ../guides/resource-routes
+[server-entry-module]: #entryservertsx
+[browser-entry-module]: #entryclienttsx
+[route-module-constraints]: ../guides/constraints
+[view-the-mdn-docs-for-the-meta-api]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
+[open-graph-tags]: https://ogp.me/
+[html-title-element]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/title
+[http-equiv-tag]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-http-equiv
+[error-boundaries]: https://reactjs.org/docs/error-boundaries.html
+[use-matches]: ./remix#usematches

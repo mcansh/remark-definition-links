@@ -5,14 +5,22 @@ import { read } from "to-vfile";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 
-import { remarkReferenceLinksBottom } from "./dist/index.js";
+import { remarkDefinitionLinks } from "./dist/index.js";
 
-let INPUT_FILE = path.join(process.cwd(), "test.md");
-let OUTPUT_FILE = path.join(process.cwd(), "test-after.md");
+let FIXTURES_DIR = path.join(process.cwd(), "__tests__", "fixtures");
+let INPUT_FILE = path.join(FIXTURES_DIR, "conventions.md");
+let OUTPUT_FILE = path.join(FIXTURES_DIR, "conventions-after.md");
 
 async function run() {
   let result = await remark()
-    .use(remarkReferenceLinksBottom)
+    .use({
+      settings: {
+        fences: true,
+        listItemIndent: "one",
+        tightDefinitions: true,
+      },
+    })
+    .use(remarkDefinitionLinks)
     .use(remarkFrontmatter, ["yaml", "toml"])
     .process(await read(INPUT_FILE));
 
