@@ -1,30 +1,54 @@
-import fsp from "node:fs/promises";
 import path from "node:path";
 
+import fse from "fs-extra";
 import { read } from "to-vfile";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
+import remarkGfm from "remark-gfm";
+import glob from "glob";
 
 import { remarkDefinitionLinks } from "./dist/index.js";
 
 let FIXTURES_DIR = path.join(process.cwd(), "__tests__", "fixtures");
-let INPUT_FILE = path.join(FIXTURES_DIR, "conventions.md");
-let OUTPUT_FILE = path.join(FIXTURES_DIR, "conventions-after.md");
+let INPUT_DIR = path.join(FIXTURES_DIR, "before");
+let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 
-async function run() {
-  let result = await remark()
-    .use({
-      settings: {
-        fences: true,
-        listItemIndent: "one",
-        tightDefinitions: true,
-      },
-    })
-    .use(remarkDefinitionLinks)
-    .use(remarkFrontmatter, ["yaml", "toml"])
-    .process(await read(INPUT_FILE));
+main();
 
-  await fsp.writeFile(OUTPUT_FILE, result.toString());
+async function main() {
+  let files = glob.sync(`${INPUT_DIR}/**/*.md`, {
+    absolute: true,
+    nodir: true,
+    ignore: ["**/node_modules/**"],
+  });
+
+  for (let file of files) {
+    try {
+      let result = await remark()
+        .use({
+          settings: {
+            fences: true,
+            listItemIndent: "one",
+            tightDefinitions: true,
+          },
+        })
+        .use(remarkDefinitionLinks)
+        .use(remarkGfm)
+        .use(remarkFrontmatter, ["yaml", "toml"])
+        .process(await read(file));
+
+      let output = path.join(OUTPUT_DIR, path.relative(INPUT_DIR, file));
+
+      let dirname = path.dirname(output);
+
+      fse.ensureDirSync(dirname);
+
+      await fse.writeFile(output, result.toString());
+
+      console.log(`Processed ${file}`);
+    } catch (error) {
+      console.error(`Failed to process ${file}`);
+      console.error(error);
+    }
+  }
 }
-
-void run();
