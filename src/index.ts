@@ -1,6 +1,13 @@
 import { visit, SKIP } from "unist-util-visit";
-import type { Definition, ImageReference, LinkReference } from "mdast";
-import type { Plugin } from "unified";
+import type {
+  Definition,
+  Image,
+  ImageReference,
+  Link,
+  LinkReference,
+  Parent,
+} from "mdast";
+import type { Transformer } from "unified";
 import slugify from "@sindresorhus/slugify";
 
 let own = {}.hasOwnProperty;
@@ -21,19 +28,13 @@ function aggregate(node: Parent) {
   return text;
 }
 
-function findImage(node: any) {
-  if (node.children && node.children.length > 0) {
-    return node.children.find((child: any) => child.type === "image");
-  }
-}
-
-export function remarkDefinitionLinks(): Plugin {
-  return (tree) => {
-    let definitions: Record<string, Record<string, string>> = {};
+export function remarkDefinitionLinks(): Transformer {
+  return function transformer(tree): void {
+    let definitions: Record<string, Record<string, Definition>> = {};
     let existing: Array<string> = [];
     let references = Object.create(null);
 
-    visit(tree, "definition", (node) => {
+    function definitionVisitor(node: Definition): void {
       let url = node.url;
       existing.push(node.identifier);
 
@@ -44,25 +45,28 @@ export function remarkDefinitionLinks(): Plugin {
       let title = node.label || "";
 
       definitions[url][title] = node;
-    });
+    }
 
-    visit(tree, (node, index, parent) => {
-      if (
-        parent &&
-        typeof index === "number" &&
-        ["image", "link"].includes(node.type)
-      ) {
-        let url: string = node.url;
-        let title: string = node.type === "image" ? node.alt : aggregate(node);
+    function linkVisitor(
+      node: Link | Image,
+      index: number,
+      parent: Parent
+    ): [typeof SKIP, number] | undefined {
+      if (parent && typeof index === "number") {
+        let url = node.url;
+        let title = node.type === "image" ? node.alt : aggregate(node);
+        // @ts-ignore
         let reference = slugify(title);
 
         // this is usually blank if the image is also a link
         if (!reference) {
-          let image = findImage(node);
-          if (image) {
-            reference = slugify(image.alt + "-image");
-          } else {
-            reference = slugify(node.url);
+          if (node.type === "link") {
+            let image = node.children.find((child) => child.type === "image");
+            if (image && image.type === "image") {
+              reference = slugify(image.alt + "-image");
+            } else {
+              reference = slugify(node.url);
+            }
           }
         }
 
@@ -97,6 +101,7 @@ export function remarkDefinitionLinks(): Plugin {
           };
 
           urls[url] = definition;
+          // @ts-ignore - cant figure our the actual type of `tree` to get it to include "children"
           tree.children.push(definition);
         }
 
@@ -118,6 +123,10 @@ export function remarkDefinitionLinks(): Plugin {
         parent.children[index] = replacement;
         return [SKIP, index];
       }
-    });
+    }
+
+    visit(tree, "definition", definitionVisitor);
+    // @ts-ignore
+    visit(tree, ["link", "image"], linkVisitor);
   };
 }
