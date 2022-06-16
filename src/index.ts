@@ -12,6 +12,10 @@ import slugify from "@sindresorhus/slugify";
 
 let own = {}.hasOwnProperty;
 
+function removeTrailingSlash(url: string) {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+}
+
 function aggregate(node: Parent) {
   const text = node.children.reduce((string, childNode) => {
     if ("value" in childNode) {
@@ -35,7 +39,7 @@ export function remarkDefinitionLinks(): Transformer {
     let references = Object.create(null);
 
     function definitionVisitor(node: Definition): void {
-      let url = node.url;
+      let url = removeTrailingSlash(node.url);
       existing.push(node.identifier);
 
       if (!own.call(definitions, url)) {
@@ -53,7 +57,7 @@ export function remarkDefinitionLinks(): Transformer {
       parent: Parent
     ): [typeof SKIP, number] | undefined {
       if (parent && typeof index === "number") {
-        let url = node.url;
+        let url = removeTrailingSlash(node.url);
         let title = node.type === "image" ? node.alt : aggregate(node);
         // @ts-ignore
         let reference = slugify(title);
@@ -65,7 +69,7 @@ export function remarkDefinitionLinks(): Transformer {
             if (image && image.type === "image") {
               reference = slugify(image.alt + "-image");
             } else {
-              reference = slugify(node.url);
+              reference = slugify(removeTrailingSlash(node.url));
             }
           }
         }
