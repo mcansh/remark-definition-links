@@ -5,12 +5,17 @@ import slugify from "@sindresorhus/slugify";
 
 let own = {}.hasOwnProperty;
 
-function aggregate(node: any) {
-  const text: string = node.children.reduce((str: string, arr: any) => {
-    if (["text", "inlineCode"].includes(arr.type)) {
-      str += arr.value;
+function aggregate(node: Parent) {
+  const text = node.children.reduce((string, childNode) => {
+    if ("value" in childNode) {
+      string += childNode.value;
     }
-    return str;
+
+    if ("children" in childNode) {
+      string += aggregate(childNode);
+    }
+
+    return string;
   }, "");
 
   return text;
