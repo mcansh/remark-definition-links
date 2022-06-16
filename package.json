@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/mdast": "3.0.10",
-    "@types/node": "17.0.41",
+    "@types/node": "17.0.42",
     "del-cli": "4.0.1",
     "fs-extra": "10.1.0",
     "glob": "8.0.3",
