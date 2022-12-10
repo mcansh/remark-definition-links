@@ -10,7 +10,8 @@
     "clean": "del dist",
     "prebuild": "npm run clean",
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "vitest run"
   },
   "files": [
     "dist",
@@ -27,11 +28,14 @@
     "unist-util-visit": "^4.1.1"
   },
   "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^8.0.0",
     "@types/mdast": "^3.0.10",
     "@types/node": "^18.11.12",
     "del-cli": "^5.0.0",
     "fs-extra": "^11.1.0",
     "glob": "^8.0.3",
+    "prettier": "^2.8.1",
     "remark": "^14.0.2",
     "remark-cli": "^11.0.0",
     "remark-frontmatter": "^4.0.1",

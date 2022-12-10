@@ -105,7 +105,7 @@ export function remarkDefinitionLinks(): Transformer {
           };
 
           urls[url] = definition;
-          // @ts-ignore - cant figure our the actual type of `tree` to get it to include "children"
+          // @ts-expect-error - cant figure our the actual type of `tree` to get it to include "children"
           tree.children.push(definition);
         }
 
@@ -130,7 +130,7 @@ export function remarkDefinitionLinks(): Transformer {
     }
 
     visit(tree, "definition", definitionVisitor);
-    // @ts-ignore
+    // @ts-expect-error
     visit(tree, ["link", "image"], linkVisitor);
   };
 }
