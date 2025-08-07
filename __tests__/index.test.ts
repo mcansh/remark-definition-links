@@ -1,26 +1,32 @@
-import { glob } from "glob";
+import fsp from "node:fs/promises";
 import path from "node:path";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { read } from "to-vfile";
 import { describe, expect, test } from "vitest";
-import { remarkDefinitionLinks } from "../src";
+import { remarkDefinitionLinks } from "../src/index.ts";
 
 let FIXTURES_DIR = path.join(process.cwd(), "__tests__", "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 
-let files = glob.sync(`./**/*.md`, {
+let filesIterator = fsp.glob("./**/*.md", {
   cwd: INPUT_DIR,
-  nodir: true,
-  ignore: ["**/node_modules/**"],
+  exclude: ["**/node_modules/**"],
 });
+
+let files: Array<string> = [];
+
+for await (const entry of filesIterator) {
+  files.push(entry);
+}
 
 describe("converts inline links to definitions", () => {
   test.each(files)("%s", async (filename) => {
     let before = await read(path.join(INPUT_DIR, filename));
     let after = await read(path.join(OUTPUT_DIR, filename));
+
     let result = await remark()
       .use({
         settings: {
