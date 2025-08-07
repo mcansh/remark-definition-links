@@ -1,7 +1,6 @@
-import path from "node:path";
-
-import fse from "fs-extra";
 import { glob } from "glob";
+import fsp from "node:fs/promises";
+import path from "node:path";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
@@ -41,9 +40,9 @@ async function main() {
 
       let dirname = path.dirname(output);
 
-      fse.ensureDirSync(dirname);
+      await fsp.mkdir(dirname, { recursive: true });
 
-      await fse.writeFile(output, result.toString());
+      await fsp.writeFile(output, result.toString());
 
       console.log(`Processed ${file}`);
     } catch (error) {
