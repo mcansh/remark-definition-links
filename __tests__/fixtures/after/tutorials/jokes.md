@@ -68,7 +68,7 @@ We'll also be executing commands in your system command line/terminal interface.
 Some experience with React and TypeScript/JavaScript is assumed. If you'd like to review your knowledge, check out these resources:
 
 * [JavaScript to know for React][java-script-to-know-for-react]
-* [The Beginner's Guide to React][the-beginner-s-guide-to-react]
+* [The Beginner's Guide to React][the-beginners-guide-to-react]
 
 And having a good understanding of [the HTTP API][the-http-api] is also helpful, but not totally required.
 
@@ -6368,7 +6368,7 @@ Phew! And there we have it. If you made it through this whole thing then I'm rea
 [vs-code]: https://code.visualstudio.com
 [fly-io]: https://fly.io
 [java-script-to-know-for-react]: https://kentcdodds.com/blog/javascript-to-know-for-react
-[the-beginner-s-guide-to-react]: https://kcd.im/beginner-react
+[the-beginners-guide-to-react]: https://kcd.im/beginner-react
 [the-http-api]: https://developer.mozilla.org/en-US/docs/Web/HTTP
 [the-basic-example]: https://codesandbox.io/s/github/remix-run/remix/tree/main/examples/basic
 [express]: https://expressjs.com
