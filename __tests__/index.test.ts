@@ -1,11 +1,10 @@
+import { glob } from "glob";
 import path from "node:path";
-
-import { describe, expect, test } from "vitest";
-import { read } from "to-vfile";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
-import glob from "glob";
+import { read } from "to-vfile";
+import { describe, expect, test } from "vitest";
 import { remarkDefinitionLinks } from "../src";
 
 let FIXTURES_DIR = path.join(process.cwd(), "__tests__", "fixtures");

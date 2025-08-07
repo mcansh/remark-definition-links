@@ -1,11 +1,11 @@
 import path from "node:path";
 
 import fse from "fs-extra";
-import { read } from "to-vfile";
+import { glob } from "glob";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
-import glob from "glob";
+import { read } from "to-vfile";
 
 import { remarkDefinitionLinks } from "./dist/index.js";
 

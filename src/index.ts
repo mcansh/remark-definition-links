@@ -1,4 +1,4 @@
-import { visit, SKIP } from "unist-util-visit";
+import slugify from "@sindresorhus/slugify";
 import type {
   Definition,
   Image,
@@ -8,7 +8,7 @@ import type {
   Parent,
 } from "mdast";
 import type { Transformer } from "unified";
-import slugify from "@sindresorhus/slugify";
+import { SKIP, visit } from "unist-util-visit";
 
 let own = {}.hasOwnProperty;
 
@@ -54,7 +54,7 @@ export function remarkDefinitionLinks(): Transformer {
     function linkVisitor(
       node: Link | Image,
       index: number,
-      parent: Parent
+      parent: Parent,
     ): [typeof SKIP, number] | undefined {
       if (parent && typeof index === "number") {
         let url = removeTrailingSlash(node.url);
