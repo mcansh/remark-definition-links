@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.2",
+    "@total-typescript/tsconfig": "^1.0.4",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.2.0",
     "glob": "^11.0.3",
