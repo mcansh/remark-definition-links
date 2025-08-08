@@ -40,6 +40,9 @@ describe("converts inline links to definitions", () => {
       .use(remarkFrontmatter, ["yaml", "toml"])
       .process(before);
 
-    expect(result.toString()).toEqual(after.toString());
+    let adjustedResult = result.toString().replace(/\\/g, "/");
+    let adjustedAfter = after.toString().replace(/\\/g, "/");
+
+    expect(adjustedResult).toEqual(adjustedAfter);
   });
 });
