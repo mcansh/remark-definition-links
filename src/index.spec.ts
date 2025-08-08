@@ -1,4 +1,5 @@
 import fsp from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
@@ -9,7 +10,10 @@ import { remarkDefinitionLinks } from "./index.ts";
 
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
-let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
+let OUTPUT_DIR = path.join(
+  FIXTURES_DIR,
+  os.platform() === "win32" ? "after-win" : "after",
+);
 let FAILED_DIR = path.join(FIXTURES_DIR, "failed");
 
 let filesIterator = fsp.glob("./**/*.md", {
