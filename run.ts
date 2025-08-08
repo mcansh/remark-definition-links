@@ -5,14 +5,14 @@ import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { read } from "to-vfile";
-import { remarkDefinitionLinks } from "./dist/index.js";
+import { remarkDefinitionLinks } from "./src/index.js";
 
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 
 // if file is ran directly ESM
-if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
+if (import.meta.url === url.pathToFileURL(process.argv[1]!).href) {
   main();
 }
 
