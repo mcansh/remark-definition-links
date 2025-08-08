@@ -10,7 +10,6 @@ import { remarkDefinitionLinks } from "./index.ts";
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
-let WINDOWS_OUTPUT_DIR = path.join(FIXTURES_DIR, "after-win");
 
 let filesIterator = fsp.glob("./**/*.md", {
   cwd: INPUT_DIR,
@@ -26,12 +25,7 @@ for await (const entry of filesIterator) {
 describe("converts inline links to definitions", () => {
   test.each(files)("%s", async (filename) => {
     let beforeFile = path.join(INPUT_DIR, filename);
-    let afterFile = path.join(
-      process.platform === "win32" ? WINDOWS_OUTPUT_DIR : OUTPUT_DIR,
-      filename,
-    );
-
-    console.log({ beforeFile, afterFile });
+    let afterFile = path.join(OUTPUT_DIR, filename);
 
     let [before, after] = await Promise.all([
       read(beforeFile),
@@ -51,6 +45,11 @@ describe("converts inline links to definitions", () => {
       .use(remarkFrontmatter, ["yaml", "toml"])
       .process(before);
 
-    expect(result.toString()).toEqual(after.toString());
+    // windows has new line endings of `\r\n`, unix has `\n`
+    // lets normalize them..
+    let normalizedResult = result.toString().replace(/\r\n/g, "\n");
+    let normalizedAfter = after.toString().replace(/\r\n/g, "\n");
+
+    expect(normalizedResult).toEqual(normalizedAfter);
   });
 });
