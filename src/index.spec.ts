@@ -10,9 +10,6 @@ import { remarkDefinitionLinks } from "./index.ts";
 
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
-console.log({
-  platform: os.platform(),
-});
 let OUTPUT_DIR = path.join(
   FIXTURES_DIR,
   os.platform() === "win32" ? "after-win" : "after",
@@ -33,6 +30,10 @@ describe("converts inline links to definitions", () => {
   test.each(files)("%s", async (filename) => {
     let before = await read(path.join(INPUT_DIR, filename));
     let after = await read(path.join(OUTPUT_DIR, filename));
+    console.log({
+      beforeFile: path.join(INPUT_DIR, filename),
+      afterFile: path.join(OUTPUT_DIR, filename),
+    });
 
     let result = await remark()
       .use({
