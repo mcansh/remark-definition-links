@@ -10,6 +10,7 @@ import { remarkDefinitionLinks } from "./index.ts";
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
+let FAILED_DIR = path.join(FIXTURES_DIR, "failed");
 
 let filesIterator = fsp.glob("./**/*.md", {
   cwd: INPUT_DIR,
@@ -40,9 +41,11 @@ describe("converts inline links to definitions", () => {
       .use(remarkFrontmatter, ["yaml", "toml"])
       .process(before);
 
-    let adjustedResult = result.toString().replace(/\\/g, "/");
-    let adjustedAfter = after.toString().replace(/\\/g, "/");
+    if (result.toString() !== after.toString()) {
+      await fsp.mkdir(FAILED_DIR, { recursive: true });
+      await fsp.writeFile(path.join(FAILED_DIR, filename), after.toString());
+    }
 
-    expect(adjustedResult).toEqual(adjustedAfter);
+    expect(result.toString()).toEqual(after.toString());
   });
 });
