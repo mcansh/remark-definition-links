@@ -7,7 +7,7 @@ import { read } from "to-vfile";
 
 import { remarkDefinitionLinks } from "./dist/index.js";
 
-let FIXTURES_DIR = path.join(process.cwd(), "__tests__", "fixtures");
+let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 

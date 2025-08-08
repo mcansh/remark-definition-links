@@ -5,9 +5,9 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { read } from "to-vfile";
 import { describe, expect, test } from "vitest";
-import { remarkDefinitionLinks } from "../src/index.ts";
+import { remarkDefinitionLinks } from "./index.ts";
 
-let FIXTURES_DIR = path.join(process.cwd(), "__tests__", "fixtures");
+let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 
