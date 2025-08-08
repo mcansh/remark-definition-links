@@ -1,5 +1,4 @@
 import fsp from "node:fs/promises";
-import os from "node:os";
 import path from "node:path";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
@@ -26,15 +25,18 @@ for await (const entry of filesIterator) {
 
 describe("converts inline links to definitions", () => {
   test.each(files)("%s", async (filename) => {
-    let before = await read(path.join(INPUT_DIR, filename));
-    let after =
-      os.platform() === "win32"
-        ? await read(path.join(WINDOWS_OUTPUT_DIR, filename))
-        : await read(path.join(OUTPUT_DIR, filename));
-    console.log({
-      beforeFile: path.join(INPUT_DIR, filename),
-      afterFile: path.join(OUTPUT_DIR, filename),
-    });
+    let beforeFile = path.join(INPUT_DIR, filename);
+    let afterFile = path.join(
+      process.platform === "win32" ? WINDOWS_OUTPUT_DIR : OUTPUT_DIR,
+      filename,
+    );
+
+    console.log({ beforeFile, afterFile });
+
+    let [before, after] = await Promise.all([
+      read(beforeFile),
+      read(afterFile),
+    ]);
 
     let result = await remark()
       .use({
