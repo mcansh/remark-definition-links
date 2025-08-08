@@ -4,8 +4,7 @@ import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { read } from "to-vfile";
-import { beforeAll, describe, expect, test } from "vitest";
-import { main } from "../run.js";
+import { describe, expect, test } from "vitest";
 import { remarkDefinitionLinks } from "./index.ts";
 
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
@@ -25,10 +24,6 @@ for await (const entry of filesIterator) {
 }
 
 describe("converts inline links to definitions", () => {
-  beforeAll(async () => {
-    await main();
-  });
-
   test.each(files)("%s", async (filename) => {
     let before = await read(path.join(INPUT_DIR, filename));
     let after = await read(path.join(OUTPUT_DIR, filename));
