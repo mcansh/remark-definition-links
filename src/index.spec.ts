@@ -14,7 +14,6 @@ let OUTPUT_DIR = path.join(
   FIXTURES_DIR,
   os.platform() === "win32" ? "after-win" : "after",
 );
-let FAILED_DIR = path.join(FIXTURES_DIR, "failed");
 
 let filesIterator = fsp.glob("./**/*.md", {
   cwd: INPUT_DIR,
@@ -44,23 +43,6 @@ describe("converts inline links to definitions", () => {
       .use(remarkGfm)
       .use(remarkFrontmatter, ["yaml", "toml"])
       .process(before);
-
-    if (result.toString() !== after.toString()) {
-      let output = path.join(FAILED_DIR, filename);
-
-      let dirname = path.dirname(output);
-
-      if (
-        !(await fsp
-          .access(dirname, fsp.constants.F_OK)
-          .then(() => true)
-          .catch(() => false))
-      ) {
-        await fsp.mkdir(dirname, { recursive: true });
-      }
-
-      await fsp.writeFile(output, after.toString());
-    }
 
     expect(result.toString()).toEqual(after.toString());
   });
