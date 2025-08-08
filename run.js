@@ -1,19 +1,22 @@
 import fsp from "node:fs/promises";
 import path from "node:path";
+import url from "node:url";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { read } from "to-vfile";
-
 import { remarkDefinitionLinks } from "./dist/index.js";
 
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 
-main();
+// if file is ran directly ESM
+if (import.meta.url === url.pathToFileURL(process.argv[1]).href) {
+  main();
+}
 
-async function main() {
+export async function main() {
   let filesIterator = fsp.glob(`${INPUT_DIR}/**/*.md`, {
     exclude: ["**/node_modules/**"],
   });
@@ -27,6 +30,7 @@ async function main() {
 
   for (let file of files) {
     try {
+      let content = await read(file);
       let result = await remark()
         .use({
           settings: {
@@ -38,7 +42,7 @@ async function main() {
         .use(remarkDefinitionLinks)
         .use(remarkGfm)
         .use(remarkFrontmatter, ["yaml", "toml"])
-        .process(await read(file));
+        .process(content);
 
       let output = path.join(OUTPUT_DIR, path.relative(INPUT_DIR, file));
 

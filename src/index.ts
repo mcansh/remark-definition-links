@@ -29,6 +29,12 @@ function aggregate(node: { children: Array<PhrasingContent> }): string {
   }, "");
 }
 
+function getTitle(node: Image | Link) {
+  if (node.type === "link") return aggregate(node);
+  if (node.type === "image" && node.alt) return node.alt;
+  return null;
+}
+
 export function remarkDefinitionLinks() {
   let definitions: Record<string, Record<string, Definition>> = {};
   let existing: Array<string> = [];
@@ -60,17 +66,7 @@ export function remarkDefinitionLinks() {
 
       let url = removeTrailingSlash(node.url);
 
-      console.log({
-        url: node.url,
-        type: node.type,
-      });
-
-      let title =
-        node.type === "image" && node.alt
-          ? node.alt
-          : node.type === "link"
-            ? aggregate(node)
-            : null;
+      let title = getTitle(node);
 
       if (typeof title !== "string") {
         throw new Error("Cannot aggregate a non-link, non-image node");
