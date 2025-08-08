@@ -10,10 +10,8 @@ import { remarkDefinitionLinks } from "./index.ts";
 
 let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
-let OUTPUT_DIR = path.join(
-  FIXTURES_DIR,
-  os.platform() === "win32" ? "after-win" : "after",
-);
+let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
+let WINDOWS_OUTPUT_DIR = path.join(FIXTURES_DIR, "after-win");
 
 let filesIterator = fsp.glob("./**/*.md", {
   cwd: INPUT_DIR,
@@ -29,7 +27,10 @@ for await (const entry of filesIterator) {
 describe("converts inline links to definitions", () => {
   test.each(files)("%s", async (filename) => {
     let before = await read(path.join(INPUT_DIR, filename));
-    let after = await read(path.join(OUTPUT_DIR, filename));
+    let after =
+      os.platform() === "win32"
+        ? await read(path.join(WINDOWS_OUTPUT_DIR, filename))
+        : await read(path.join(OUTPUT_DIR, filename));
     console.log({
       beforeFile: path.join(INPUT_DIR, filename),
       afterFile: path.join(OUTPUT_DIR, filename),
