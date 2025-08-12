@@ -1,4 +1,4 @@
-import fsp from "node:fs/promises";
+import { glob } from "glob";
 import path from "node:path";
 import { remark } from "remark";
 import remarkFrontmatter from "remark-frontmatter";
@@ -11,16 +11,10 @@ let FIXTURES_DIR = path.join(process.cwd(), "fixtures");
 let INPUT_DIR = path.join(FIXTURES_DIR, "before");
 let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 
-let filesIterator = fsp.glob("./**/*.md", {
+let files = await glob("./**/*.md", {
   cwd: INPUT_DIR,
-  exclude: ["**/node_modules/**"],
+  ignore: ["**/node_modules/**"],
 });
-
-let files: Array<string> = [];
-
-for await (const entry of filesIterator) {
-  files.push(entry);
-}
 
 describe("converts inline links to definitions", () => {
   test.each(files)("%s", async (filename) => {
