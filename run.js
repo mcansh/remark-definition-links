@@ -1,3 +1,4 @@
+import { glob } from "glob";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { remark } from "remark";
@@ -13,16 +14,11 @@ let OUTPUT_DIR = path.join(FIXTURES_DIR, "after");
 main();
 
 async function main() {
-  let filesIterator = fsp.glob(`${INPUT_DIR}/**/*.md`, {
-    exclude: ["**/node_modules/**"],
+  let files = await glob("./**/*.md", {
+    absolute: true,
+    cwd: INPUT_DIR,
+    ignore: ["**/node_modules/**"],
   });
-
-  /** @type {Array<string>} */
-  let files = [];
-
-  for await (const entry of filesIterator) {
-    files.push(entry);
-  }
 
   for (let file of files) {
     try {
